@@ -1,7 +1,9 @@
 package org.personal.app.pwdgen.domain;
 
 import lombok.RequiredArgsConstructor;
-import org.personal.app.common.exceptions.password.PasswordNameAlreadyExists;
+import org.personal.app.common.utils.ErrorCode;
+import org.personal.app.pwdgen.web.exceptions.InvalidPasswordRequest;
+import org.personal.app.pwdgen.web.exceptions.PasswordNameAlreadyExists;
 import org.personal.app.common.models.PagedDto;
 import org.personal.app.pwdgen.domain.dtos.PasswordDto;
 import org.personal.app.pwdgen.domain.dtos.PasswordRequest;
@@ -23,6 +25,13 @@ public class PasswordService {
 
     public String generatePassword(PasswordRequest request)
     {
+
+        if(!request.getIncludeLowerCase() && !request.getIncludeUpperCase() &&
+           !request.getIncludeNumbers() && !request.getIncludeSpecialChars())
+        {
+            throw new InvalidPasswordRequest("Include least one field out all the provided constraints", ErrorCode.TICKED_NONE);
+        }
+
         final StringBuilder sb = new StringBuilder();
         final List<Integer> indexes = new LinkedList<>();
 
@@ -49,7 +58,7 @@ public class PasswordService {
 
     }
 
-    public void savePassword(final SavePassword saveRequest, final Long ucid)
+    public PasswordDto savePassword(final SavePassword saveRequest, final Long ucid)
     {
 
         boolean exists = this.passwordRepo.existsByUcidAndName(ucid, saveRequest.name());
@@ -98,7 +107,7 @@ public class PasswordService {
                 .ucid(ucid)
                 .build();
 
-        this.passwordRepo.save(password);
+        return modelMapper.toDto(this.passwordRepo.save(password));
     }
 
     public PagedDto<PasswordDto> getPagedPasswords(final Integer page,
@@ -111,7 +120,8 @@ public class PasswordService {
                 passwordDtos,
                 passwordEntities.hasNext(),
                 passwordEntities.hasPrevious(),
-                passwordEntities.getTotalPages()
+                passwordEntities.getTotalPages(),
+                page
         );
     }
 

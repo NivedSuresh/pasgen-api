@@ -8,7 +8,8 @@ public class ModelMapper
 {
     PasswordDto toDto(PasswordEntity entity){
         return new PasswordDto(
-               entity.getId(),
+                entity.getId(),
+                entity.getName(),
                 entity.getPassword(),
                 entity.getHasLowerCase(),
                 entity.getHasUpperCase(),

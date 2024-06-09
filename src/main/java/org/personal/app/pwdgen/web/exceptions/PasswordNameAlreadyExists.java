@@ -1,4 +1,4 @@
-package org.personal.app.common.exceptions.password;
+package org.personal.app.pwdgen.web.exceptions;
 
 import org.personal.app.common.exceptions.GlobalException;
 import org.springframework.http.HttpStatus;

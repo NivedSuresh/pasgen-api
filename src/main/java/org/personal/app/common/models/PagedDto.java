@@ -15,4 +15,5 @@ public class PagedDto <T>
     private boolean hasNext;
     private boolean hasPrev;
     private int totalPages;
+    private int currentPage;
 }

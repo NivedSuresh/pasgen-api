@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.personal.app.common.models.PagedDto;
 import org.personal.app.pwdgen.domain.PasswordService;
+import org.personal.app.pwdgen.domain.dtos.Password;
 import org.personal.app.pwdgen.domain.dtos.PasswordDto;
 import org.personal.app.pwdgen.domain.dtos.PasswordRequest;
 import org.personal.app.pwdgen.domain.dtos.SavePassword;
@@ -21,18 +22,19 @@ class PasswordController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    String generateNewPassword(@RequestBody @Valid final PasswordRequest passwordRequest)
+    Password generateNewPassword(@RequestBody @Valid final PasswordRequest passwordRequest)
     {
-        return this.passwordService.generatePassword(passwordRequest);
+        final String pas = this.passwordService.generatePassword(passwordRequest);
+        return new Password(pas);
     }
 
 
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
-    void savePassword(@RequestBody @Valid final SavePassword saveRequest,
+    PasswordDto savePassword(@RequestBody @Valid final SavePassword saveRequest,
                       @RequestHeader("x-auth-user-id") final Long ucid)
     {
-        this.passwordService.savePassword(saveRequest, ucid);
+        return this.passwordService.savePassword(saveRequest, ucid);
     }
 
 
